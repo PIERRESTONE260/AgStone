@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="light" data-font="inter">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AgStone | Elite</title>
+    <!-- favicon -->
+     <link rel="shortcut icon" href="img/favicon.svg" type="image/x-icon">
+    <!-- Polices et Icônes -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="css/style.css">
+    <!-- Meta pour PWA -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#6366f1">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="apple-touch-icon" href="img/logo.svg">
+</head>
+<body>
+
+    <!-- L'élément body::before (géré en CSS) sert de calque d'arrière-plan isolé -->
+
+    <div class="app-container">
+        <!-- BARRE DE NAVIGATION (SIDEBAR DESKTOP / BOTTOM NAV MOBILE) -->
+        <nav class="sidebar">
+            <div class="brand">
+                <img src="img/logo.svg" alt="Logo" id="app-logo">
+                <span>AgStone</span>
+            </div>
+            <br>
+            <div class="nav-links">
+                <button class="nav-item active" data-page="dashboard">
+                    <i class="bi bi-grid-1x2-fill"></i> <span>Accueil</span>
+                </button>
+                <button class="nav-item" data-page="notepad">
+                    <i class="bi bi-journal-bookmark-fill"></i> <span>Notes</span>
+                </button>
+                <button class="nav-item" data-page="alarms">
+                    <i class="bi bi-alarm-fill"></i> <span>Alarmes</span>
+                </button>
+                <button class="nav-item" data-page="settings">
+                    <i class="bi bi-gear-wide-connected"></i> <span>Réglages</span>
+                </button>
+            </div>
+
+            <!-- Bouton Action Rapide (Desktop uniquement) -->
+            <button id="desktop-add-btn" class="btn-primary desktop-only">
+                <i class="bi bi-plus-lg"></i> Nouvelle Tâche
+            </button>
+        </nav>
+
+        <!-- ZONE DE CONTENU PRINCIPALE -->
+        <main class="content">
+            <!-- BARRE SUPÉRIEURE (RECHERCHE & HORLOGE) -->
+            <header class="top-bar">
+                <div class="search-box">
+                    <i class="bi bi-search"></i>
+                    <input type="text" id="global-search" placeholder="Recherche intelligente...">
+                </div>
+                <div class="header-info">
+                    <span id="live-clock">00:00</span>
+                </div>
+            </header>
+
+            <!-- PAGE : TABLEAU DE BORD (DASHBOARD) -->
+            <section id="dashboard-page" class="page active">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <span class="label">Missions en cours</span>
+                        <span class="value" id="stat-pending">0</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="label">Objectifs terminés</span>
+                        <span class="value" id="stat-completed">0</span>
+                    </div>
+                </div>
+
+                <div class="bento-grid">
+                    <!-- Section Focus Tâches -->
+                    <div class="grid-col tasks-section">
+                        <div class="section-header">
+                            <h2>Focus du jour</h2>
+                            <div class="filter-pills">
+                                <button class="pill active" data-filter="all">Toutes</button>
+                                <button class="pill" data-filter="pending">À faire</button>
+                            </div>
+                        </div>
+                        <div id="task-list" class="task-feed">
+                            <!-- Injecté par script.js -->
+                        </div>
+                    </div>
+
+                    <!-- Section Calendrier Bento -->
+                    <div class="grid-col calendar-section">
+                        <div class="calendar-widget">
+                            <div class="cal-nav">
+                                <button id="prev-month"><i class="bi bi-chevron-left"></i></button>
+                                <h3 id="cal-month-year">Chargement...</h3>
+                                <button id="next-month"><i class="bi bi-chevron-right"></i></button>
+                            </div>
+                            <div class="cal-weekdays">
+                                <span>L</span><span>M</span><span>M</span><span>J</span><span>V</span><span>S</span><span>D</span>
+                            </div>
+                            <div id="calendar-grid" class="cal-body">
+                                <!-- Injecté par script.js -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- PAGE : BLOC-NOTES (SYSTÈME MULTI-CARNETS) -->
+            <section id="notepad-page" class="page">
+                <!-- Vue 1 : Bibliothèque de Carnets (Rooms) -->
+                <div id="notepad-library-view">
+                    <div class="section-header" id="library-header">
+                        <div>
+                            <h2>Mes Carnets</h2>
+                            <p class="text-sub">Archives de vos réflexions stratégiques</p>
+                        </div>
+                        <button class="btn-primary" id="new-note-btn"><i class="bi bi-journal-plus"></i> Nouveau Carnet</button>
+                    </div>
+                    <div id="notes-library" class="notes-grid">
+                        <!-- Injecté par script.js -->
+                    </div>
+                </div>
+
+                <!-- Vue 2 : L'Éditeur (Design Petit Cahier) -->
+                <div id="note-editor-view" class="notepad-container" style="display: none;">
+                    <button class="btn-secondary" id="back-to-library"><i class="bi bi-arrow-left"></i> Retour</button>
+                    <div class="notepad-spiral"></div>
+                    <div class="notepad-sheet">
+                        <div class="notepad-header">
+                            <input type="text" id="note-title-input" placeholder="Titre de la note...">
+                            <span class="status-indicator" id="note-save-status">Auto-sauvegarde</span>
+                        </div>
+                        <div class="textarea-wrapper">
+                            <div class="notepad-margin"></div>
+                            <textarea id="notepad-area" placeholder="Écrivez vos pensées ici..."></textarea>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- PAGE : ALARMES -->
+            <section id="alarms-page" class="page">
+                <div class="section-header">
+                    <h2>Alarmes Élite</h2>
+                    <button class="btn-primary" id="add-alarm-btn"><i class="bi bi-plus-lg"></i> Régler une alarme</button>
+                </div>
+                <div id="alarm-list" class="alarm-grid">
+                    <!-- Injecté par script.js -->
+                </div>
+            </section>
+
+            <!-- PAGE : RÉGLAGES (SETTINGS) -->
+            <section id="settings-page" class="page">
+                <div class="settings-container">
+                    <div class="settings-grid">
+                        
+                        <!-- Apparence -->
+                        <div class="settings-card">
+                            <div class="card-title"><i class="bi bi-palette-fill"></i> <h3>Apparence</h3></div>
+                            <div class="setting-item">
+                                <div class="setting-info"><label>Thème visuel</label><small>Mode Clair, Sombre ou Minuit</small></div>
+                                <select id="theme-select" class="modern-select">
+                                    <option value="light">Mode Clair (Zinc)</option>
+                                    <option value="dark">Mode Sombre (Slate)</option>
+                                    <option value="midnight">Mode Minuit (OLED)</option>
+                                    <option value="dark-red">Mode Rouge Sombre (Crimson)</option>
+                                </select>
+                            </div>
+                            <div class="setting-item">
+                                <div class="setting-info"><label>Police de caractère</label><small>Style typographique</small></div>
+                                <select id="font-select" class="modern-select">
+                                    <option value="inter">Inter (SaaS Standard)</option>
+                                    <option value="poppins">Poppins (Moderne)</option>
+                                    <option value="mono">Space Mono (Technique)</option>
+                                    <option value="roboto">Roboto (Classique)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Thèmes et Arrière-plans -->
+                        <div class="settings-card">
+                            <div class="card-title"><i class="bi bi-image-fill"></i> <h3>Espace de Travail</h3></div>
+                            <div class="setting-item vertical">
+                                <label>Thèmes proposés</label>
+                                <div id="preset-gallery" class="gallery-grid">
+                                    <!-- Miniatures injectées par JS -->
+                                </div>
+                            </div>
+                            <div class="setting-item vertical">
+                                <label>Image personnalisée</label>
+                                <div class="input-group-modern">
+                                    <input type="text" id="bg-url-input" placeholder="Lien direct vers une image...">
+                                    <button id="apply-bg" class="btn-primary">Appliquer</button>
+                                </div>
+                                <div style="margin-top:10px; width: 100%;">
+                                    <label for="bg-upload-input" class="btn-secondary" style="display:block; text-align:center;">
+                                        <i class="bi bi-upload"></i> Charger depuis le téléphone
+                                    </label>
+                                    <input type="file" id="bg-upload-input" accept="image/*" style="display:none">
+                                </div>
+                            </div>
+                            <div class="setting-item">
+                                <label>Flou d'arrière-plan</label>
+                                <input type="range" id="bg-blur-range" min="0" max="25" value="10">
+                            </div>
+                        </div>
+
+                        <!-- Gestion des Données -->
+                        <div class="settings-card full-width">
+                            <div class="card-title"><i class="bi bi-database-fill-check"></i> <h3>Gestion des données</h3></div>
+                            <div class="setting-item">
+                                <div class="setting-info"><label>Sauvegarde Externe</label><small>Exportez vos tâches et notes en JSON</small></div>
+                                <div style="display:flex; gap:10px;">
+                                    <button id="export-btn" class="btn-secondary"><i class="bi bi-download"></i> Exporter</button>
+                                    <button id="import-trigger" class="btn-secondary"><i class="bi bi-upload"></i> Importer</button>
+                                    <input type="file" id="import-input" accept=".json" style="display:none">
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- BOUTON FLOTTANT (MOBILE UNIQUEMENT) -->
+        <button id="mobile-add-btn" class="btn-fab mobile-only">
+            <i class="bi bi-plus-lg"></i>
+        </button>
+    </div>
+
+    <!-- MODAL : GESTION DE TÂCHE -->
+    <div class="modal-overlay" id="task-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-title">Nouvelle Mission</h3>
+                <button class="close-modal"><i class="bi bi-x-lg"></i></button>
+            </div>
+            <form id="task-form">
+                <input type="hidden" id="task-id">
+                <div class="form-group">
+                    <label>Intitulé de la tâche</label>
+                    <input type="text" id="task-title" required placeholder="Que devez-vous accomplir ?">
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label>Date d'échéance</label><input type="date" id="task-date" required></div>
+                    <div class="form-group"><label>Heure</label><input type="time" id="task-time" required></div>
+                </div>
+                <div class="form-group">
+                    <label>Niveau de priorité</label>
+                    <select id="task-priority">
+                        <option value="low">Priorité Basse</option>
+                        <option value="normal" selected>Priorité Normale</option>
+                        <option value="urgent">Priorité Urgente</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Notes complémentaires</label>
+                    <textarea id="task-desc" placeholder="Détails, liens ou instructions..."></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="button" id="delete-task-btn" class="btn-text-danger">Supprimer</button>
+                    <button type="submit" class="btn-primary">Enregistrer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL : RÉGLAGE ALARME (DIALOGUE MODERNE) -->
+    <div class="modal-overlay" id="alarm-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Régler l'alarme</h3>
+                <button class="close-modal"><i class="bi bi-x-lg"></i></button>
+            </div>
+            <form id="alarm-form">
+                <div class="form-group">
+                    <label>Heure de déclenchement</label>
+                    <input type="time" id="alarm-time-input" required class="modern-select" style="width:100%">
+                </div>
+                <div class="form-group">
+                    <label>Mélodie de réveil</label>
+                    <select id="alarm-sound-select" class="modern-select" style="width:100%">
+                        <option value="https://assets.mixkit.co/sfx/preview/mixkit-alarm-digital-clock-beep-989.mp3" selected>Digital Elite (Défaut)</option>
+                        <option value="https://assets.mixkit.co/sfx/preview/mixkit-church-bell-ding-607.mp3">Cloche Zen</option>
+                        <option value="https://assets.mixkit.co/sfx/preview/mixkit-alarm-clock-radio-beep-988.mp3">Radio Vintage</option>
+                        <option value="https://assets.mixkit.co/sfx/preview/mixkit-alarm-clock-beep-989.mp3">Bip Classique</option>
+                        <option value="https://assets.mixkit.co/sfx/preview/mixkit-alarm-clock-soft-beep-987.mp3">Bip Doux</option>
+                    </select>
+                    <button type="button" id="test-sound-btn" class="btn-secondary" style="margin-top:10px; width:100%">Tester le son</button>
+                </div>
+                <button type="submit" class="btn-primary" style="width:100%">Activer l'alarme</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ÉCRAN D'ALERTE (ALARME ACTIVE) -->
+    <div id="alarm-overlay" class="alarm-screen">
+        <div class="alarm-content">
+            <div class="alarm-icon"><i class="bi bi-alarm-fill"></i></div>
+            <h1 id="alarm-time-display">00:00</h1>
+            <p id="alarm-label-display">ALERTE AGSTONE</p>
+            <button id="stop-alarm" class="btn-stop">ARRÊTER</button>
+        </div>
+    </div>
+
+    <!-- MOTEUR LOGIQUE -->
+    <script src="js/script.js"></script>
+    <!-- js en html pour installation -->
+    <script>
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('sw.js')
+                .then(reg => console.log('AgStone : App prête pour installation.'))
+                .catch(err => console.log('Erreur Service Worker', err));
+        });
+    }
+</script>
+</body>
+</html>
