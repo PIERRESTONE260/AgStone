@@ -126,17 +126,26 @@
                 </div>
 
                 <!-- Vue 2 : L'Éditeur (Design Petit Cahier) -->
-                <div id="note-editor-view" class="notepad-container" style="display: none;">
-                    <button class="btn-secondary" id="back-to-library"><i class="bi bi-arrow-left"></i> Retour</button>
-                    <div class="notepad-spiral"></div>
-                    <div class="notepad-sheet">
-                        <div class="notepad-header">
-                            <input type="text" id="note-title-input" placeholder="Titre de la note...">
-                            <span class="status-indicator" id="note-save-status">Auto-sauvegarde</span>
+                <!-- VUE 2 : L'ÉDITEUR (LE GRAND CAHIER IMMERSIF) -->
+                <div id="note-editor-view" class="notepad-immersive-container" style="display: none;">
+                    <div class="notepad-toolbar">
+                        <button class="btn-secondary" id="back-to-library">
+                            <i class="bi bi-chevron-left"></i> Bibliothèque
+                        </button>
+                        <div class="note-meta-info">
+                            <input type="text" id="note-title-input" placeholder="Titre du carnet...">
+                            <span id="note-save-status">Synchronisé</span>
                         </div>
-                        <div class="textarea-wrapper">
-                            <div class="notepad-margin"></div>
-                            <textarea id="notepad-area" placeholder="Écrivez vos pensées ici..."></textarea>
+                    </div>
+
+                    <div class="notepad-paper-wrapper">
+                        <!-- La Reliure (Spirale) -->
+                        <div class="notepad-spiral-binding"></div>
+                        
+                        <!-- La Feuille -->
+                        <div class="notepad-paper-sheet">
+                            <div class="notepad-vertical-line"></div>
+                            <textarea id="notepad-area" placeholder="Exprimez votre génie ici..."></textarea>
                         </div>
                     </div>
                 </div>

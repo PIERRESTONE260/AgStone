@@ -211,29 +211,132 @@ body.has-bg::before {
 .note-room p { font-size: 0.85rem; color: var(--text-sub); display: -webkit-box; -webkit-line-clamp: 3; line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
 
 /* DESIGN PETIT CAHIER (L'ÉDITEUR) */
-.notepad-container { max-width: 900px; margin: 0 auto; display: flex; position: relative; padding-left: 20px; }
-.notepad-spiral { position: absolute; left: 5px; top: 40px; bottom: 40px; width: 30px; z-index: 10; }
-.notepad-spiral::before { content: ""; height: 100%; width: 100%; background-image: radial-gradient(circle, #475569 30%, transparent 40%); background-size: 30px 40px; display: block; }
-.notepad-sheet {
-    background-color: #fffdf5; width: 100%; min-height: 80vh; border-radius: 4px 15px 15px 4px;
-    border: 1px solid rgba(0,0,0,0.05); position: relative; display: flex; flex-direction: column; overflow: hidden;
-    box-shadow: 10px 10px 30px rgba(0,0,0,0.1);
+.notepad-immersive-container {
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 120px); /* Remplit toute la hauteur moins la topbar */
+    gap: 1.5rem;
+    animation: notepadReveal 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
-[data-theme="dark"] .notepad-sheet, [data-theme="midnight"] .notepad-sheet { background-color: #1e293b; }
 
-.notepad-header { padding: 2rem 3rem 1rem 4rem; border-bottom: 2px solid var(--prio-urgent); margin-bottom: 10px; }
-#note-title-input { background: transparent; border: none; font-size: 1.8rem; font-weight: 800; width: 100%; color: var(--text-main); }
+@keyframes notepadReveal {
+    from { opacity: 0; transform: scale(0.98); }
+    to { opacity: 1; transform: scale(1); }
+}
 
-.textarea-wrapper { position: relative; flex-grow: 1; display: flex; }
-.notepad-margin { position: absolute; left: 60px; top: 0; bottom: 0; width: 2px; background-color: rgba(239, 68, 68, 0.3); }
+/* Barre d'outils du carnet */
+.notepad-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 0 0.5rem;
+}
 
+.note-meta-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+#note-title-input {
+    background: transparent;
+    border: none;
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: var(--text-main);
+    width: 100%;
+    padding: 0;
+}
+
+#note-save-status {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--prio-low);
+    letter-spacing: 1px;
+}
+
+/* Le corps du papier */
+.notepad-paper-wrapper {
+    flex: 1; /* Remplit tout l'espace restant */
+    display: flex;
+    position: relative;
+    background: var(--bg-card);
+    border-radius: 4px 20px 20px 4px;
+    box-shadow: var(--shadow-elite);
+    overflow: hidden; /* Important : pas de scroll ici, le scroll est dans le textarea */
+}
+
+/* Reliure Premium */
+.notepad-spiral-binding {
+    width: 45px;
+    background: linear-gradient(to right, #e2e8f0 0%, #cbd5e1 50%, #94a3b8 100%);
+    position: relative;
+    z-index: 10;
+}
+
+.notepad-spiral-binding::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background-image: radial-gradient(circle at 50% 50%, #475569 25%, transparent 35%);
+    background-size: 100% 40px; /* Espacement des anneaux */
+}
+
+/* La Feuille de Papier */
+.notepad-paper-sheet {
+    flex: 1;
+    background-color: #fffdfa; /* Papier crème pro */
+    position: relative;
+    display: flex;
+}
+
+[data-theme="dark"] .notepad-paper-sheet,
+[data-theme="midnight"] .notepad-paper-sheet {
+    background-color: #1e293b;
+}
+
+/* Marge rouge classique */
+.notepad-vertical-line {
+    position: absolute;
+    left: 60px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background-color: rgba(239, 68, 68, 0.25);
+    z-index: 1;
+}
+
+/* L'éditeur (Sorcellerie de l'alignement) */
 #notepad-area {
-    width: 100% !important; height: 100% !important; background-color: transparent !important;
-    background-image: linear-gradient(rgba(99, 102, 241, 0.1) 1px, transparent 1px) !important;
-    background-size: 100% 32px !important; line-height: 32px !important;
-    padding: 0 3rem 0 80px !important; border: none !important; font-size: 1.1rem !important; resize: none; color: #334155;
+    width: 100% !important;
+    height: 100% !important;
+    padding: 40px 40px 40px 85px !important; /* Marge gauche pour la ligne rouge */
+    border: none !important;
+    background-color: transparent !important;
+    
+    /* Lignes bleues de cahier */
+    background-image: linear-gradient(var(--border) 1px, transparent 1px) !important;
+    background-size: 100% 36px !important; /* Hauteur d'une ligne */
+    
+    line-height: 36px !important; /* Doit être IDENTIQUE à background-size */
+    font-size: 1.15rem !important;
+    color: #334155 !important;
+    font-family: 'Inter', sans-serif;
+    resize: none;
+    z-index: 2;
+    overflow-y: auto;
 }
-[data-theme="dark"] #notepad-area, [data-theme="midnight"] #notepad-area { color: #e2e8f0 !important; }
+
+[data-theme="dark"] #notepad-area,
+[data-theme="darkred"] #notepad-area {
+    color: red !important;
+    background-image: linear-gradient(rgba(255, 55, 255, 0,04) 1px, transparent 1px) !important;
+}
+[data-theme="midnight"] #notepad-area {
+    color: #e2e8f0 !important;
+    background-image: linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px) !important;
+}
 
 /* --- 9. ALARMES (PROFESSIONNEL) --- */
 .alarm-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 1.5rem; margin-top: 1.5rem; }
@@ -491,9 +594,28 @@ body.has-bg::before {
     .modal-content { padding: 2.5rem 1.5rem; }
     
     /* Posture du cahier sur mobile */
-    .notepad-container { padding-left: 10px; }
-    .notepad-margin { left: 45px; }
-    #notepad-area { padding-left: 55px !important; font-size: 1rem !important; }
+    .notepad-immersive-container {
+        height: calc(100vh - 180px); /* Plus d'espace pour la bottom nav */
+    }
+
+    .notepad-spiral-binding {
+        width: 25px; /* Spirale plus fine sur mobile */
+    }
+
+    .notepad-vertical-line {
+        left: 40px;
+    }
+
+    #notepad-area {
+        padding: 20px 20px 20px 55px !important;
+        font-size: 1rem !important;
+        line-height: 32px !important;
+        background-size: 100% 32px !important;
+    }
+
+    #note-title-input {
+        font-size: 1.3rem;
+    }
 }
 
 /* --- 13. SCROLLBAR (FINITION) --- */
